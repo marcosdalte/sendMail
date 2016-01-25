@@ -1,0 +1,136 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+CREATE SCHEMA IF NOT EXISTS `deliver` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `deliver` ;
+
+-- -----------------------------------------------------
+-- Table `deliver`.`user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `deliver`.`user` ;
+
+CREATE TABLE IF NOT EXISTS `deliver`.`user` (
+  `idUser` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `dt_birthday` DATE NOT NULL,
+  `bl_active` ENUM('S','N') NOT NULL,
+  PRIMARY KEY (`idUser`),
+  UNIQUE INDEX `idUser_UNIQUE` (`idUser` ASC))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci
+COMMENT = '		';
+
+
+-- -----------------------------------------------------
+-- Table `deliver`.`employee`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `deliver`.`employee` ;
+
+CREATE TABLE IF NOT EXISTS `deliver`.`employee` (
+  `idworker` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `bl_active` ENUM('S','N') NOT NULL,
+  `dt_admission` DATE NOT NULL,
+  `user_idUser` INT NOT NULL,
+  PRIMARY KEY (`idworker`, `user_idUser`),
+  UNIQUE INDEX `idworker_UNIQUE` (`idworker` ASC),
+  INDEX `fk_employee_user1_idx` (`user_idUser` ASC),
+  CONSTRAINT `fk_employee_user1`
+    FOREIGN KEY (`user_idUser`)
+    REFERENCES `deliver`.`user` (`idUser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `deliver`.`messages`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `deliver`.`messages` ;
+
+CREATE TABLE IF NOT EXISTS `deliver`.`messages` (
+  `idmessage` INT NOT NULL AUTO_INCREMENT,
+  `cd_message` VARCHAR(45) NOT NULL,
+  `subject` VARCHAR(80) NOT NULL,
+  `message` VARCHAR(500) NOT NULL,
+  `bl_active` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idmessage`),
+  UNIQUE INDEX `idmessage_UNIQUE` (`idmessage` ASC))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `deliver`.`template_email`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `deliver`.`template_email` ;
+
+CREATE TABLE IF NOT EXISTS `deliver`.`template_email` (
+  `idtemplate_email` INT NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(45) NOT NULL,
+  `cd_template` VARCHAR(45) NOT NULL,
+  `path` VARCHAR(45) NOT NULL,
+  `bl_active` ENUM('S','N') NOT NULL,
+  `messages_idmessage` INT NOT NULL,
+  PRIMARY KEY (`idtemplate_email`, `messages_idmessage`),
+  UNIQUE INDEX `idtemplate_email_UNIQUE` (`idtemplate_email` ASC),
+  UNIQUE INDEX `cd_template_UNIQUE` (`cd_template` ASC, `bl_active` ASC),
+  INDEX `fk_template_email_messages1_idx` (`messages_idmessage` ASC),
+  CONSTRAINT `fk_template_email_messages1`
+    FOREIGN KEY (`messages_idmessage`)
+    REFERENCES `deliver`.`messages` (`idmessage`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `deliver`.`special_date`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `deliver`.`special_date` ;
+
+CREATE TABLE IF NOT EXISTS `deliver`.`special_date` (
+  `idspecial_date` INT NOT NULL AUTO_INCREMENT,
+  `name_date` VARCHAR(45) NOT NULL,
+  `date` DATE NOT NULL,
+  `template_email_idtemplate_email` INT NOT NULL,
+  PRIMARY KEY (`idspecial_date`, `template_email_idtemplate_email`),
+  UNIQUE INDEX `idspecial_date_UNIQUE` (`idspecial_date` ASC),
+  UNIQUE INDEX `date_UNIQUE` (`date` ASC),
+  INDEX `fk_special_date_template_email1_idx` (`template_email_idtemplate_email` ASC),
+  CONSTRAINT `fk_special_date_template_email1`
+    FOREIGN KEY (`template_email_idtemplate_email`)
+    REFERENCES `deliver`.`template_email` (`idtemplate_email`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `deliver`.`login`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `deliver`.`login` ;
+
+CREATE TABLE IF NOT EXISTS `deliver`.`login` (
+  `idlogin` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `reminder` ENUM('S','N') NOT NULL,
+  PRIMARY KEY (`idlogin`),
+  UNIQUE INDEX `idlogin_UNIQUE` (`idlogin` ASC))
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
