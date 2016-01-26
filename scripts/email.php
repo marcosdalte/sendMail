@@ -1,5 +1,5 @@
 <?php
-require "phpmailer/class.phpmailer.php";
+require "../vendor/autoload.php";
 
 $con = new PDO("mysql:host=localhost;dbname=deliver", "root", "") or print(mysql_error());
 print "Conexão Efetuada com Sucesso!\n";
