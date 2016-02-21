@@ -1,0 +1,12 @@
+{
+	"default": {
+		"driver": "sqlite",
+		"host": "/willer/tests/database/db_restaurant",
+		"name": "",
+		"user": "",
+		"password": "",
+		"port": "",
+		"autocommit": 0,
+		"debug": 0
+	}
+}

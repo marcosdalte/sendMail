@@ -1,5 +1,8 @@
-.c9/*
-adminer.php
+.buildpath
+.project
+dummy.php
+*.rtpl.php
+*.txt
+.travis.yml
 composer.lock
-phpinfo.php
-vendor/
+/vendor/

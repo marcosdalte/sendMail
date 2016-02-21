@@ -1,0 +1,29 @@
+{
+	"name": "marcosdalte/sendmail",
+	"description": "Script to run on Cron for Send Email, with Admin to register special dates, templates, users, receivers.",
+	"keywords": ["SendEmail"],
+	"homepage": "https://github.com/marcosdalte/sendMail",
+	"type": "library",
+	"require": {
+		"php": ">=5.6",
+		"phpmailer/phpmailer": ">=5.2",
+		"phpunit/phpunit":"5.x",
+		"luiscoms/release": "dev-master"
+	},
+	"minimum-stability": "dev",
+	"license": "MIT",
+	"authors": [
+	{
+		"name": "Marcos Dalte",
+		"email": "marcosdalte@gmail.com"
+	},
+	{
+		"name": "William Borba",
+		"email": "wborba.dev@gmail.com"
+	},
+	{
+		"name": "Luis Fernando Gomes",
+		"email": "dev@luiscoms.com.br"
+	}
+	]
+}
