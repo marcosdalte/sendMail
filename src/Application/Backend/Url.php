@@ -4,7 +4,8 @@ namespace Application\Backend {
     class Url {
         static public function url() {
             return [
-                '/^\/backend\/home\/?$/' => ['Backend/Home/index',['GET']],
+                '/^\/backend\/login\/?$/' => ['Backend/Login/index',['GET','POST']],
+                '/^\/backend\/home\/?$/'  => ['Backend/Home/index',['GET']],
             ];
         }
     }
