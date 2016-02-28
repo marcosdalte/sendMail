@@ -8,8 +8,9 @@ class LoginMigration extends AbstractMigration
     {
         // create the table
         $table = $this->table('login', array('id' => 'login_id'));
-        $table->addColumn('username', 'string', array('limit' => 45))
-              ->addColumn('password', 'string', array('limit' => 100))
+        $table->addColumn('username', 'string', array('limit' => 45, 'null' => false))
+              ->addColumn('password', 'string', array('limit' => 100, 'null' => false))
+              ->addIndex('username', array('unique' => true))
               ->create();
     }
 }
