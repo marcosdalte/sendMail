@@ -56,6 +56,8 @@ namespace Application\Backend\Controller {
 
                     throw new Exception($error->getMessage());
                 }
+
+                Util::renderToJson($login);
             }
 
             require(ROOT_PATH.'/Application/Backend/view/login.html');

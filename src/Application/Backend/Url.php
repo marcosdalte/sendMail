@@ -6,6 +6,7 @@ namespace Application\Backend {
             return [
                 '/^\/backend\/login\/?$/' => ['Backend/Login/index',['GET','POST']],
                 '/^\/backend\/home\/?$/'  => ['Backend/Home/index',['GET']],
+                '/^\/backend\/receiver\/?$/'  => ['Backend/Receiver/index',['GET']],
             ];
         }
     }
