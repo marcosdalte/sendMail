@@ -13,7 +13,7 @@ class ReceiverMigration extends AbstractMigration
               ->addColumn('dt_birthday', 'date', array('limit' => 45, 'null' => false))
               //Doesnt have support to enum
               //->addColumn('bl_active', 'enum', array('limit' => array('y', 'n'), 'null' => false))
-              ->addColumn('bl_active', 'boolean', array('limit' => array('y', 'n'), 'null' => false))
+              ->addColumn('bl_active', 'string', array('limit' => 2, 'null' => false))
               ->addIndex(array('name', 'email'), array('unique' => true))
               ->create();
     }
