@@ -17,6 +17,40 @@ namespace Application\Backend\Controller {
             $this->db_transaction = new Transaction();
         }
 
+        public function add() {
+            try {
+                $data = json_decode(file_get_contents("php://input"), true);
+                if (json_last_error() !== 0) {
+                    throw new Exception('Mandatory field not sent ');
+                }
+                // TODO validation
+
+                $receiver = new ModelReceiver($this->db_transaction);
+
+                // open connection with begin transaction
+                $this->db_transaction->beginTransaction();
+
+                $receiver->save([
+                        'name' => $data['name'],
+                        'email' => $data['email'],
+                        'dt_birthday' => $data['birthday'],
+                ]);
+
+                // throw new Exception('My exception');
+                $this->db_transaction->commit();
+
+            } catch (Exception $e) {
+                $this->db_transaction->rollBack();
+                Util::renderToJson([
+                    'success' => false,
+                    'message' => 'Error on insert'//$e->getMessage()
+                ]);
+                exit;
+            }
+            Util::renderToJson(['success' => true]);
+
+        }
+
         public function setReceiver() {
             if (!empty($_POST)) {
                 //$name = $_POST['name'];
@@ -30,10 +64,10 @@ namespace Application\Backend\Controller {
                 try {
                     // consulta o model receiver, com os dados passados pelo formulario
                     //$receiver = new ModelReceiver($this->db_transaction);
-                    
+
                     // open connection with begin transaction
                     //$this->db_transaction->beginTransaction();
-    
+
                 } catch (Exception $error) {
                     throw new Exception($error->getMessage());
                 }
@@ -42,7 +76,7 @@ namespace Application\Backend\Controller {
             }
             require(ROOT_PATH.'/Application/Backend/view/receiver.html');
         }
-        
+
         public function getReceiver() {
             $receiver = new ModelReceiver($this->db_transaction);
             
@@ -54,8 +88,9 @@ namespace Application\Backend\Controller {
                 ->limit(1,5)
                 ->execute([
                     'join' => 'left']);
-                
+
             Util::renderToJson($receiver_list);
+            //@TODO Utilizar algum framework de tratamento de templates.
             //require(ROOT_PATH.'/Application/Backend/view/receiver.html');
         }
     }

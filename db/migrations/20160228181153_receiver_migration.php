@@ -11,7 +11,7 @@ class ReceiverMigration extends AbstractMigration
         $table->addColumn('name', 'string', array('limit' => 45, 'null' => false))
               ->addColumn('email', 'string', array('limit' => 45, 'null' => false))
               ->addColumn('dt_birthday', 'date', array('null' => false))
-              ->addColumn('bl_active', 'enum', array('values' => array('y', 'n'), 'null' => false))
+              ->addColumn('bl_active', 'enum', array('values' => array('y', 'n'), 'null' => false ,'default' => 'y'))
               ->addIndex(array('name', 'email'), array('unique' => true))
               ->create();
     }
