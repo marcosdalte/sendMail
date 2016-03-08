@@ -89,7 +89,7 @@ namespace Application\Backend\Controller {
                 ->execute([
                     'join' => 'left']);
 
-            Util::renderToJson($receiver_list);
+            return Util::renderToJson($receiver_list);
             //@TODO Utilizar algum framework de tratamento de templates.
             //require(ROOT_PATH.'/Application/Backend/view/receiver.html');
         }
