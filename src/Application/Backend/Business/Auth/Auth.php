@@ -4,6 +4,7 @@
  * Namespace contendo uma camada de negocio especifica para
  * autenticação de usuario
  * 
+ * @autor wborba <wborba.dev@gmail.com>
  * @class Auth
  * 
  */
@@ -68,6 +69,7 @@ namespace Application\Backend\Business\Auth {
          * 
          */
         public function init() {
+            $this->clearCookie();
             $this->getAuth();
             $cookie = $this->setCookie();
             
@@ -141,24 +143,29 @@ namespace Application\Backend\Business\Auth {
         /**
          * 
          * Cria e retorna os cookie
-         * Caso ja exista os cookie, os retorna, sem reescrita
+         * Configura o header com o novo cookie
          * 
          * @return $cookie dict
          * 
          */
         private function setCookie() {
-            $cookie = $this->getCookie();
+            $user = $this->getUser($user);
 
-            if (empty($cookie[self::COOKIE_USERNAME]) || empty($cookie[self::COOKIE_HASH])) {
-                $user = $this->getUser($user);
+            $expire = time() + 60;
+            $password_hash = md5($user->password);
 
-                setcookie(self::COOKIE_USERNAME,$user->username,time() + 60);
-                setcookie(self::COOKIE_HASH,md5($user->password),time() + 60);
-                
-                $cookie = [
-                    self::COOKIE_USERNAME => $user->username,
-                    self::COOKIE_HASH => md5($user->password)];
-            }
+            setcookie(self::COOKIE_USERNAME,$user->username,$expire);
+            setcookie(self::COOKIE_HASH,$password_hash,$expire);
+
+            $cookie = [
+                self::COOKIE_USERNAME => $user->username];
+
+            $header_set_cookie = vsprintf('Set-Cookie: %s=%s;EXPIRES=%s;',[
+                self::COOKIE_USERNAME,
+                $user->username,
+                $expire]);
+
+            header($header_set_cookie);
 
             return $cookie;
         }

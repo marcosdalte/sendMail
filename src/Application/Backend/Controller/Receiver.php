@@ -4,6 +4,7 @@ namespace Application\Backend\Controller {
     use Core\Controller;
     use Core\DAO\Transaction;
     use Core\Util;
+    use Application\Backend\Business\Receiver\Receiver as BusinessReceiver;
     use Application\Backend\Model\Receiver as ModelReceiver;
     use \Exception as Exception;
 
@@ -15,6 +16,34 @@ namespace Application\Backend\Controller {
             
             // load transaction object
             $this->db_transaction = new Transaction();
+        }
+        /**
+         * Método utilizado para triar o tipo de requisição
+         * Para cada tipo de requisição HTTP, será delegado um método especifico.
+         * 
+         * A classe que contem os métodos está no pacote 
+         * Application\Backend\Business\Receiver
+         * 
+         * @autor wborba <wborba.dev@gmail.com>
+         * @return Class Receiver
+         * 
+         */
+        public function dispatch(...$kwargs) {
+            $receiver = new BusinessReceiver;
+
+            switch ($_SERVER['REQUEST_METHOD']) {
+                case 'GET':
+                    return $receiver->listing($kwargs);
+                    break;
+                
+                case 'PUT':
+                    return $receiver->add($kwargs);
+                    break;
+                
+                case 'POST':
+                    return $receiver->edit($kwargs);
+                    break;
+            }
         }
 
         public function add() {
@@ -51,7 +80,7 @@ namespace Application\Backend\Controller {
 
         }
 
-        public function setReceiver() {
+        public function edit() {
             if (!empty($_POST)) {
                 //$name = $_POST['name'];
                 $email = $_POST['email'];
@@ -77,7 +106,7 @@ namespace Application\Backend\Controller {
             require(ROOT_PATH.'/Application/Backend/view/receiver.html');
         }
 
-        public function getReceiver() {
+        public function listing() {
             $receiver = new ModelReceiver($this->db_transaction);
             
             $this->db_transaction->connect();
