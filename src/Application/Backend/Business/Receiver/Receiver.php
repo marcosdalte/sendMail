@@ -1,10 +1,9 @@
 <?php
 
-namespace Application\Backend\Controller {
+namespace Application\Backend\Business\Receiver {
     use Core\Controller;
     use Core\DAO\Transaction;
     use Core\Util;
-    use Application\Backend\Business\Receiver\Receiver as BusinessReceiver;
     use Application\Backend\Model\Receiver as ModelReceiver;
     use \Exception as Exception;
 
@@ -17,38 +16,8 @@ namespace Application\Backend\Controller {
             // load transaction object
             $this->db_transaction = new Transaction();
         }
-        /**
-         * Método utilizado para triar o tipo de requisição
-         * Para cada tipo de requisição HTTP, será delegado um método especifico.
-         * 
-         * A classe que contem os métodos está no pacote 
-         * Application\Backend\Business\Receiver
-         * 
-         * @autor wborba <wborba.dev@gmail.com>
-         * @return Class Receiver
-         * 
-         */
-        public function dispatch(...$kwargs) {
-            print_r($kwargs);
-            $receiver = new BusinessReceiver;
-            echo "SERVER..: " . $_SERVER['REQUEST_METHOD'] . "\n";
 
-            switch ($_SERVER['REQUEST_METHOD']) {
-                case 'GET':
-                    return $receiver->listing($kwargs);
-                    break;
-                
-                case 'PUT':
-                    return $receiver->add($kwargs);
-                    break;
-                
-                case 'POST':
-                    return $receiver->edit($kwargs);
-                    break;
-            }
-        }
-
-        public function add() {
+        public function add($kwargs) {
             try {
                 $data = json_decode(file_get_contents("php://input"), true);
                 if (json_last_error() !== 0) {
@@ -82,7 +51,7 @@ namespace Application\Backend\Controller {
 
         }
 
-        public function edit($id,...$kwargs) {
+        public function edit($kwargs) {
             if (!empty($_POST)) {
                 //$name = $_POST['name'];
                 $email = $_POST['email'];
@@ -106,6 +75,24 @@ namespace Application\Backend\Controller {
                 Util::renderToJson($receiver);
             }
             require(ROOT_PATH.'/Application/Backend/view/receiver.html');
+        }
+
+        public function listing($kwargs) {
+            print_r($kwargs);
+            $receiver = new ModelReceiver($this->db_transaction);
+            
+            $this->db_transaction->connect();
+            
+            $receiver_list = $receiver
+                ->where()
+                ->orderBy()
+                ->limit(1)
+                ->execute([
+                    'join' => 'left']);
+
+            return Util::renderToJson($receiver_list);
+            //@TODO Utilizar algum framework de tratamento de templates.
+            //require(ROOT_PATH.'/Application/Backend/view/receiver.html');
         }
     }
 }
