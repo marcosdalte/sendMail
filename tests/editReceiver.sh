@@ -1,4 +1,4 @@
 #!/bin/bash
 
-curl -X POST -d "{\"birthday\": \"1970-01-01\"}" https://sendmail-marcosdalte.c9users.io/willer/backend/receiver/edit/1
+curl -X PUT -d "{\"name\": \"John Edit\", \"email\": \"edit${RANDOM}.com\", \"birthday\": \"2016-01-01\", \"bl_active\": \"y\"}" https://sendmail-upd-marcosdalte.c9users.io/willer/api/receivers/13
 echo

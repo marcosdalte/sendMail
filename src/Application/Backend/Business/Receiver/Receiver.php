@@ -23,10 +23,11 @@ namespace Application\Backend\Business\Receiver {
                 if (json_last_error() !== 0) {
                     throw new Exception('Mandatory field not sent ');
                 }
+                
                 // TODO validation
-
+                $this->db_transaction->connect();
                 $receiver = new ModelReceiver($this->db_transaction);
-
+            
                 // open connection with begin transaction
                 $this->db_transaction->beginTransaction();
 
@@ -43,7 +44,7 @@ namespace Application\Backend\Business\Receiver {
                 $this->db_transaction->rollBack();
                 Util::renderToJson([
                     'success' => false,
-                    'message' => 'Error on insert'//$e->getMessage()
+                    'message' => $e->getMessage()
                 ]);
                 exit;
             }
@@ -52,33 +53,52 @@ namespace Application\Backend\Business\Receiver {
         }
 
         public function edit($kwargs) {
-            if (!empty($_POST)) {
-                //$name = $_POST['name'];
-                $email = $_POST['email'];
-                //$dt_birthday = $_POST['dt_birthday'];
-        
-                if (empty($name) || empty($email) || empty($dt_birthday)) {
-                    throw new Exception('verificar o erro');
+          try {
+                echo $receiver_id = substr($kwargs[0], 1, 20);
+                
+                $data = json_decode(file_get_contents("php://input"), true);
+                if (json_last_error() !== 0) {
+                    throw new Exception('Mandatory field not sent ');
                 }
+                // TODO validation
+                $this->db_transaction->connect();
+                $receiver = new ModelReceiver($this->db_transaction);
+                
+                // open connection with begin transaction
+                $this->db_transaction->beginTransaction();
+                
+                $receiver->get(['receiver_id'=> $receiver_id]);
+                
+                if(!empty($data['name']))
+                    $receiver->name = $data['name'];
+                
+                if(!empty($data['email']))
+                    $receiver->email = $data['email'];
+                
+                if(!empty($data['birthday']))
+                    $receiver->dt_birthday = $data['birthday'];
+                
+                if(!empty($data['bl_active']))
+                    $receiver->bl_active = $data['bl_active'];
+                
+                $receiver->save();
+                
+                $this->db_transaction->commit();
 
-                try {
-                    // consulta o model receiver, com os dados passados pelo formulario
-                    //$receiver = new ModelReceiver($this->db_transaction);
-
-                    // open connection with begin transaction
-                    //$this->db_transaction->beginTransaction();
-
-                } catch (Exception $error) {
-                    throw new Exception($error->getMessage());
-                }
-
-                Util::renderToJson($receiver);
+            } catch (Exception $error) {
+                $this->db_transaction->rollBack();
+                Util::renderToJson([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+                exit;
             }
-            require(ROOT_PATH.'/Application/Backend/view/receiver.html');
+
+            Util::renderToJson(['success' => true]);
         }
 
         public function listing($kwargs) {
-            print_r($kwargs);
+            //@TODO GET page pagelimite
             $receiver = new ModelReceiver($this->db_transaction);
             
             $this->db_transaction->connect();
@@ -86,13 +106,11 @@ namespace Application\Backend\Business\Receiver {
             $receiver_list = $receiver
                 ->where()
                 ->orderBy()
-                ->limit(1)
+                ->limit()
                 ->execute([
                     'join' => 'left']);
 
             return Util::renderToJson($receiver_list);
-            //@TODO Utilizar algum framework de tratamento de templates.
-            //require(ROOT_PATH.'/Application/Backend/view/receiver.html');
         }
     }
 }

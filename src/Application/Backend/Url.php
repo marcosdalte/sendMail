@@ -10,12 +10,9 @@ namespace Application\Backend {
 
             $url += [
                 '/^\/api\/login\/auth\/?$/'       => ['Backend/Login/auth',['POST','GET']],
-                '/^\/api\/receivers(\/[0-9]+)?$/' => ['Backend/Receiver/dispatch', ['GET','POST','DELETE','PUT']],
+                '/^\/api\/receivers(\/[0-9]+)?$/' => ['Backend/Receiver/dispatch', ['GET','POST','DELETE','PUT']]];
                 //'/^\/api\/receivers(\/(?P<id>\d+)\/(?P<nome>\w+))?$/' => ['Backend/Receiver/dispatch', ['GET','POST','DELETE','PUT']],
-                '/^\/api\/receiver\/add\/?$/'     => ['Backend/Receiver/add', ['PUT']],
-                '/^\/api\/receiver\/edit\/?$/'    => ['Backend/Receiver/edit',['POST']],
-                '/^\/api\/receiver\/list\/?$/'    => ['Backend/Receiver/listing',['GET','POST']]];
-            
+
             return $url;
         }
     }

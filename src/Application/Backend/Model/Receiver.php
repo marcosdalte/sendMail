@@ -14,7 +14,7 @@ namespace Application\Backend\Model {
                 'receiver_id' => Model::primaryKey(),
                 'name' => Model::char(['length' => 45]),
                 'email' => Model::char(['length' => 100]),
-                'dt_birthday' => Model::char(['length' => 100]),
+                'dt_birthday' => Model::date(),
                 'bl_active' => Model::char(['length' => 2]),
             ];
         }
