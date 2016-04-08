@@ -9,6 +9,8 @@ namespace Application\Backend\Business\Receiver {
 
     class Receiver extends Controller {
         private $db_transaction;
+        private $limit = 20;
+        private $page = 1;
         
         public function __construct($request_method = null) {
             parent::__construct($request_method);
@@ -24,7 +26,7 @@ namespace Application\Backend\Business\Receiver {
                     throw new Exception('Mandatory field not sent ');
                 }
                 
-                // TODO validation
+                // @TODO validation
                 $this->db_transaction->connect();
                 $receiver = new ModelReceiver($this->db_transaction);
             
@@ -60,7 +62,7 @@ namespace Application\Backend\Business\Receiver {
                 if (json_last_error() !== 0) {
                     throw new Exception('Mandatory field not sent ');
                 }
-                // TODO validation
+                // @TODO validation
                 $this->db_transaction->connect();
                 $receiver = new ModelReceiver($this->db_transaction);
                 
@@ -98,15 +100,16 @@ namespace Application\Backend\Business\Receiver {
         }
 
         public function listing($kwargs) {
-            //@TODO GET page pagelimite
             $receiver = new ModelReceiver($this->db_transaction);
             
-            $this->db_transaction->connect();
+            $page = Util::get($_GET,'page',$this->page);
+            $limit = Util::get($_GET,'limit',$this->limit);
             
+            $this->db_transaction->connect();
             $receiver_list = $receiver
                 ->where()
                 ->orderBy()
-                ->limit()
+                ->limit($page,$limit)
                 ->execute([
                     'join' => 'left']);
 
