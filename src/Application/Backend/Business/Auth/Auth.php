@@ -102,7 +102,7 @@ namespace Application\Backend\Business\Auth {
         /**
          * 
          * Efetua a consulta de usuario no model User
-         * Em caso de erro, retorna uma exceção coma mensagem de eror
+         * Em caso de erro, retorna uma exceção coma mensagem de erro
          * 
          * @return void
          * 
