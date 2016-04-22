@@ -1,13 +1,13 @@
 <?php
 
-namespace Application\Backend\Business\Receiver {
+namespace Application\Backend\Business\User {
     use Core\Controller;
     use Core\DAO\Transaction;
     use Core\Util;
-    use Application\Backend\Model\Receiver as ModelReceiver;
+    use Application\Backend\Model\User as ModelUser;
     use \Exception as Exception;
 
-    class Receiver extends Controller {
+    class User extends Controller {
         private $db_transaction;
         private $limit = 20;
         private $page = 1;
@@ -28,15 +28,14 @@ namespace Application\Backend\Business\Receiver {
                 
                 // @TODO validation
                 $this->db_transaction->connect();
-                $receiver = new ModelReceiver($this->db_transaction);
+                $user = new ModelUser($this->db_transaction);
             
                 // open connection with begin transaction
                 $this->db_transaction->beginTransaction();
 
-                $receiver->save([
-                        'name' => $data['name'],
-                        'email' => $data['email'],
-                        'dt_birthday' => $data['birthday'],
+                $user->save([
+                        'username' => $data['username'],
+                        'password' => $data['password'],
                 ]);
 
                 // throw new Exception('My exception');
@@ -56,7 +55,7 @@ namespace Application\Backend\Business\Receiver {
 
         public function edit($kwargs) {
           try {
-                $receiver_id = substr($kwargs[0], 1, 20);
+                $user_id = substr($kwargs[0], 1, 20);
                 
                 $data = json_decode(file_get_contents("php://input"), true);
                 if (json_last_error() !== 0) {
@@ -64,26 +63,20 @@ namespace Application\Backend\Business\Receiver {
                 }
                 // @TODO validation
                 $this->db_transaction->connect();
-                $receiver = new ModelReceiver($this->db_transaction);
+                $user = new ModelUser($this->db_transaction);
                 
                 // open connection with begin transaction
                 $this->db_transaction->beginTransaction();
                 
-                $receiver->get(['receiver_id'=> $receiver_id]);
+                $user->get(['user_id'=> $user_id]);
                 
-                if(!empty($data['name']))
-                    $receiver->name = $data['name'];
+                if(!empty($data['username']))
+                    $user->username = $data['username'];
                 
-                if(!empty($data['email']))
-                    $receiver->email = $data['email'];
+                if(!empty($data['password']))
+                    $user->password = $data['password'];
                 
-                if(!empty($data['birthday']))
-                    $receiver->dt_birthday = $data['birthday'];
-                
-                if(!empty($data['bl_active']))
-                    $receiver->bl_active = $data['bl_active'];
-                
-                $receiver->save();
+                $user->save();
                 
                 $this->db_transaction->commit();
 
@@ -100,20 +93,20 @@ namespace Application\Backend\Business\Receiver {
         }
 
         public function listing($kwargs) {
-            $receiver = new ModelReceiver($this->db_transaction);
+            $user = new ModelUser($this->db_transaction);
             
             $page = Util::get($_GET,'page',$this->page);
             $limit = Util::get($_GET,'limit',$this->limit);
             
             $this->db_transaction->connect();
-            $receiver_list = $receiver
+            $user_list = $user
                 ->where()
                 ->orderBy()
                 ->limit($page,$limit)
                 ->execute([
                     'join' => 'left']);
-
-            return Util::renderToJson($receiver_list);
+            //@TODO remover campo senha do retorno da API
+            return Util::renderToJson($user_list);
         }
     }
 }
