@@ -58,33 +58,68 @@ namespace Application\Backend\Business\Employee {
         }
 
         public function edit($kwargs) {
-          try {
-                $user_id = substr($kwargs[0], 1, 20);
+            try {
+                echo $employee_id = substr($kwargs[0], 1, 20);
                 
                 $data = json_decode(file_get_contents("php://input"), true);
                 if (json_last_error() !== 0) {
                     throw new Exception('Mandatory field not sent ');
                 }
+                
                 // @TODO validation
                 $this->db_transaction->connect();
-                $user = new ModelUser($this->db_transaction);
+                $employee = new ModelEmployee($this->db_transaction);
+                $receiver = new ModelReceiver($this->db_transaction);
                 
                 // open connection with begin transaction
                 $this->db_transaction->beginTransaction();
+
+                $receiver->get(['receiver_id' => $data['receiver_id']]);
+                echo $data['receiver_id'] . "\n";
                 
-                $user->get(['user_id'=> $user_id]);
+                if(!empty($data['name'])){
+                    $receiver->name = $data['name'];
+                    echo $data['name'] . "\n";
+                }
                 
-                if(!empty($data['username']))
-                    $user->username = $data['username'];
+                if(!empty($data['email'])){
+                    $receiver->email = $data['email'];
+                    echo $data['email'] . "\n";      
+                }
                 
-                if(!empty($data['password']))
-                    $user->password = $data['password'];
+                if(!empty($data['birthday'])){
+                    $receiver->dt_birthday = $data['birthday'];
+                    echo $data['dt_birthday'] . "\n";
+                }
                 
-                $user->save();
+                if(!empty($data['receiver_bl_active']))
+                    $receiver->bl_active = $data['receiver_bl_active'];
+                    
+                $receiver->save();
+                
+                $employee->get(['employee_id' => $employee_id]);
+                
+                if(!empty($data['dt_admission'])){
+                    $employee->dt_admission = $data['dt_admission'];
+                    echo $data['dt_admission'] . "\n";
+                }
+                    
+                if(!empty($data['bl_active'])){
+                    $employee->bl_active = $data['bl_active'];
+                    echo $data['bl_active'] . "\n";
+                }
+                    
+                if(!empty($data['receiver_id'])){
+                    $receiver->get(['receiver_id' => $data['receiver_id']]);
+                    
+                    $employee->receiver_id = $receiver;
+                }
+                
+                $employee->save();
                 
                 $this->db_transaction->commit();
-
-            } catch (Exception $error) {
+                
+            } catch (Exception $e) {
                 $this->db_transaction->rollBack();
                 Util::renderToJson([
                     'success' => false,
@@ -92,7 +127,6 @@ namespace Application\Backend\Business\Employee {
                 ]);
                 exit;
             }
-
             Util::renderToJson(['success' => true]);
         }
 
