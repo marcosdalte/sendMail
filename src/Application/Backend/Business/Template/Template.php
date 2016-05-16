@@ -33,7 +33,7 @@ namespace Application\Backend\Business\Template {
                 // open connection with begin transaction
                 $this->db_transaction->beginTransaction();
 
-                $receiver->save([
+                $template->save([
                         'description' => $data['description'],
                         'cd_template' => $data['cd_template'],
                         'path' => $data['path'],
