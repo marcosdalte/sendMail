@@ -13,7 +13,8 @@ namespace Application\Backend {
                 '/^\/api\/receivers(\/[0-9]+)?$/' => ['Backend/Receiver/dispatch', ['GET','POST','DELETE','PUT']],
                 '/^\/api\/users(\/[0-9]+)?$/' => ['Backend/User/dispatch', ['GET','POST','DELETE','PUT']],
                 '/^\/api\/employees(\/[0-9]+)?$/' => ['Backend/Employee/dispatch', ['GET','POST','DELETE','PUT']],
-                '/^\/api\/templates(\/[0-9]+)?$/' => ['Backend/Template/dispatch', ['GET','POST','DELETE','PUT']]];
+                '/^\/api\/templates(\/[0-9]+)?$/' => ['Backend/Template/dispatch', ['GET','POST','DELETE','PUT']],
+                '/^\/api\/events(\/[0-9]+)?$/' => ['Backend/Events/dispatch', ['GET','POST','DELETE','PUT']]];
                 //'/^\/api\/receivers(\/(?P<id>\d+)\/(?P<nome>\w+))?$/' => ['Backend/Receiver/dispatch', ['GET','POST','DELETE','PUT']],
             return $url;
         }
