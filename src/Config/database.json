@@ -1,0 +1,23 @@
+{
+	"default": {
+		"driver": "sqlite",
+		"host": "/home/wborba/Dropbox/projeto/php/willer/willer/tests/database/db_restaurant",
+		"name": "",
+		"user": "",
+		"password": "",
+		"port": "",
+		"autocommit": 0,
+		"debug": 0
+	},
+	
+	"development": {
+		"driver": "mysql",
+		"host": "localhost",
+		"name": "sendmail_dsv",
+		"user": "marcosdalte",
+		"password": "",
+		"port": "",
+		"autocommit": 0,
+		"debug": 0
+	}
+}

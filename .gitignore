@@ -1,0 +1,9 @@
+.c9/*
+.buildpath
+.project
+dummy.php
+*.rtpl.php
+*.txt
+.travis.yml
+composer.lock
+/vendor/
